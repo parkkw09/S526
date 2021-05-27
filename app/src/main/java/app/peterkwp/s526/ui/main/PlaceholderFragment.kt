@@ -8,12 +8,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import app.peterkwp.s526.R
 import app.peterkwp.s526.databinding.FragmentMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A placeholder fragment containing a simple view.
  */
+@AndroidEntryPoint
 class PlaceholderFragment : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel

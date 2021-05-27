@@ -3,6 +3,7 @@
     package="app.peterkwp.s526">
 
     <application
+        android:name=".S526"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +12,7 @@
         android:theme="@style/Theme.S526"
         android:fullBackupContent="@xml/backup_descriptor">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.S526.NoActionBar">
             <intent-filter>
