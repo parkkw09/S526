@@ -13,6 +13,6 @@ class S526: Application() {
     }
 
     companion object {
-        private const val TAG = "S526"
+        private const val TAG = "Application"
     }
 }

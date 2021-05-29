@@ -31,6 +31,9 @@
         android:name="app.peterkwp.s526.ui.detail.DetailFragment"
         tools:layout="@layout/fragment_detail">
 
+        <argument
+            android:name="isbn"
+            app:argType="string" />
     </fragment>
 
     <fragment

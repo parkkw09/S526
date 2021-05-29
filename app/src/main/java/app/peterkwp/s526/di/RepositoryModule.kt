@@ -1,5 +1,6 @@
 package app.peterkwp.s526.di
 
+import app.peterkwp.s526.domain.local.S526Data
 import app.peterkwp.s526.domain.remote.Api
 import app.peterkwp.s526.domain.repository.LibraryRepository
 import dagger.Module
@@ -14,5 +15,5 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideLibraryRepository(api: Api): LibraryRepository = LibraryRepository(api)
+    fun provideLibraryRepository(api: Api, data: S526Data): LibraryRepository = LibraryRepository(api, data)
 }
