@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">s526</string>
+    <string name="app_name">S526</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="new_book">New</string>
+    <string name="detail_book">Detail Book</string>
+    <string name="bookmark">BookMark</string>
+    <string name="history">History</string>
+    <string name="search">Search</string>
 </resources>

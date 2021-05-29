@@ -1,7 +1,7 @@
 package app.peterkwp.s526.di
 
+import app.peterkwp.s526.domain.data.DomainConst
 import app.peterkwp.s526.domain.remote.Api
-import app.peterkwp.s526.util.Utils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,7 @@ class ApiModule {
         okHttpClient: OkHttpClient,
         converter: Converter.Factory): Api
             = Retrofit.Builder()
-        .baseUrl(Utils.URL)
+        .baseUrl(DomainConst.URL)
         .client(okHttpClient)
         .addConverterFactory(converter)
         .build()
