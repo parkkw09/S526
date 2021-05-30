@@ -7,13 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import app.peterkwp.s526.R
 import app.peterkwp.s526.databinding.ItemBookBinding
 import app.peterkwp.s526.domain.model.Book
+import app.peterkwp.s526.util.Log
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
 class BookmarkAdapter(
     private val glideManager: RequestManager,
-    private val func : (Book) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val onClick : (Book) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperListener {
 
     private val bookList: MutableList<Book> = mutableListOf()
 
@@ -37,23 +38,39 @@ class BookmarkAdapter(
         notifyDataSetChanged()
     }
 
+    fun getList() = bookList
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        Log.d(TAG, "onCreateViewHolder() viewType[$viewType]")
         return BookViewHolder(
             ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        Log.d(TAG, "onBindViewHolder() position[$position]")
         val book = bookList[position]
         (holder as BookViewHolder).apply {
             bind(position, book)
-            itemView.setOnClickListener { func.invoke(book) }
+            itemView.setOnClickListener { onClick.invoke(book) }
         }
     }
 
     override fun getItemCount(): Int = bookList.size
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        Log.d(TAG, "onItemMove() fromPosition[$fromPosition], toPosition[$toPosition]")
+        val fromBook = bookList[fromPosition]
+        val toBook = bookList[toPosition]
+        bookList[fromPosition] = toBook
+        bookList[toPosition] = fromBook
+        notifyItemMoved(fromPosition, toPosition)
+        return true
+    }
+
+    override fun onItemSwipe(position: Int) {
+        Log.d(TAG, "onItemSwipe() position[$position]")
+        bookList.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
     inner class BookViewHolder(
         private val binding: ItemBookBinding

@@ -15,3 +15,17 @@ annotation class TabType {
         const val S526_HISTORY = 2
     }
 }
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(
+    ItemType.S526_NONE,
+    ItemType.S526_REMOVE,
+    ItemType.S526_MOVE
+)
+annotation class ItemType {
+    companion object {
+        const val S526_NONE = 0
+        const val S526_REMOVE = 1
+        const val S526_MOVE = 2
+    }
+}

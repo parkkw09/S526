@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">나의 서재</string>
+    <string name="new_book">새로운 책</string>
+    <string name="detail_book">상세한 책</string>
+    <string name="bookmark">책갈피</string>
+    <string name="history">검색기록</string>
+    <string name="search">검색</string>
+    <string name="search_hint">검색어</string>
+    <string name="add_bookmark">책갈피 추가</string>
+    <string name="delete_bookmark">책갈피 삭제</string>
+</resources>

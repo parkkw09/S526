@@ -50,19 +50,19 @@ class DetailFragment: Fragment() {
                         .into(it)
                 }
 
-                this.fab.setOnClickListener { view -> checkBookmark(isbn, information, view) }
+                this.fab.setOnClickListener { view -> checkBookmark(information, view) }
             }
         }
     }
 
-    private fun checkBookmark(isbn: String, information: DetailBook, view: View) {
-        when (viewModel.checkBookmark(isbn)) {
+    private fun checkBookmark(information: DetailBook, view: View) {
+        when (viewModel.checkBookmark(information)) {
             true -> {
-                viewModel.deleteBookmark(isbn)
+                viewModel.deleteBookmark(information)
                 Snackbar.make(view, getString(R.string.delete_bookmark), Snackbar.LENGTH_SHORT).show()
             }
             false -> {
-                viewModel.addBookmark(isbn, information)
+                viewModel.addBookmark(information)
                 Snackbar.make(view, getString(R.string.add_bookmark), Snackbar.LENGTH_SHORT).show()
             }
         }

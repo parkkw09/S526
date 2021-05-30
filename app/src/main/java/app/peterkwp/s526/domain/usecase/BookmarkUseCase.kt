@@ -9,25 +9,36 @@ class BookmarkUseCase @Inject constructor(
     private val repository: LibraryRepository
 ) {
 
-    fun addBookmark(isbn: String, book: DetailBook) = repository.addBookmark(isbn, book)
-
-    fun deleteBookmark(isbn: String) = repository.deleteBookmark(isbn)
-
-    fun checkBookmark(isbn: String): Boolean = repository.checkBookmark(isbn)
-
-    fun getBookmark(): List<Book> {
-        val hashMap = repository.getBookmark()
-        val list = mutableListOf<Book>()
-        hashMap.forEach { (_, detailBook) ->
-            list.add(Book(detailBook.isbn13,
-                          detailBook.title,
-                          detailBook.subtitle,
-                          detailBook.price,
-                          detailBook.image,
-                          detailBook.url))
-        }
-        return list
+    fun addBookmark(detailBook: DetailBook) {
+        repository.addBookmark(Book(detailBook.isbn13,
+            detailBook.title,
+            detailBook.subtitle,
+            detailBook.price,
+            detailBook.image,
+            detailBook.url))
     }
+
+    fun deleteBookmark(detailBook: DetailBook) {
+        repository.deleteBookmark(Book(detailBook.isbn13,
+            detailBook.title,
+            detailBook.subtitle,
+            detailBook.price,
+            detailBook.image,
+            detailBook.url))
+    }
+
+    fun checkBookmark(detailBook: DetailBook): Boolean {
+        return repository.checkBookmark(Book(detailBook.isbn13,
+            detailBook.title,
+            detailBook.subtitle,
+            detailBook.price,
+            detailBook.image,
+            detailBook.url))
+    }
+
+    fun updateBookmark(bookmark: List<Book>) = repository.updateBookmark(bookmark)
+
+    fun getBookmark(): List<Book> = repository.getBookmark()
 
         companion object {
         private const val TAG = "BookmarkUseCase"

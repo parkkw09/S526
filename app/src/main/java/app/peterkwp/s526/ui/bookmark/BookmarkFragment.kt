@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.peterkwp.s526.databinding.FragmentBookmarkBinding
 import app.peterkwp.s526.ui.main.ViewPagerFragmentDirections
@@ -21,6 +22,8 @@ class BookmarkFragment: Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
     private val glide: RequestManager by lazy { GlideApp.with(this) }
+
+    private lateinit var binding: FragmentBookmarkBinding
 
     private fun subscribeUi(adapter : BookmarkAdapter) {
         viewModel.bookmark.observe(viewLifecycleOwner, { bookList ->
@@ -44,7 +47,7 @@ class BookmarkFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentBookmarkBinding.inflate(inflater, container, false)
+        binding = FragmentBookmarkBinding.inflate(inflater, container, false)
         val adapter = BookmarkAdapter(glide) {
             Log.d(TAG, "onCreateView() item click [${it.isbn}]")
             navigateToDetail(binding.root, it.isbn)
@@ -52,6 +55,9 @@ class BookmarkFragment: Fragment() {
         binding.bookmarkList.apply {
             layoutManager = LinearLayoutManager(context)
             this.adapter = adapter
+        }
+        ItemTouchHelper(ItemMoveCallback(adapter)).apply {
+            attachToRecyclerView(binding.bookmarkList)
         }
         subscribeUi(adapter)
         return binding.root
@@ -61,6 +67,13 @@ class BookmarkFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated()")
         launchUi()
+    }
+
+    override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView()")
+        val adapter = binding.bookmarkList.adapter as BookmarkAdapter
+        viewModel.updateBookmark(adapter.getList())
+        super.onDestroyView()
     }
 
     companion object {

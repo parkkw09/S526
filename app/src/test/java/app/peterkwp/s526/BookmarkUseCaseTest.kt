@@ -31,27 +31,26 @@ class BookmarkUseCaseTest {
     @Test
     fun `북마크 추가 테스트 - 주어진 샘플이 정상적으로 저장되어야 한다`() {
         val useCase = BookmarkUseCase(repository)
-        useCase.addBookmark(ISBN, DETAIL_BOOK)
+        useCase.addBookmark(DETAIL_BOOK)
         assertEquals(BOOK_LIST, useCase.getBookmark())
     }
 
     @Test
     fun `북마크 삭 테스트 - 주어진 샘플이 정상적으로 삭제되어야 한다`() {
         val useCase = BookmarkUseCase(repository)
-        useCase.addBookmark(ISBN, DETAIL_BOOK)
-        useCase.deleteBookmark(ISBN)
+        useCase.addBookmark(DETAIL_BOOK)
+        useCase.deleteBookmark(DETAIL_BOOK)
         assertEquals(EMPTY_BOOK_LIST, useCase.getBookmark())
     }
 
     @Test
     fun `북마크 확인 테스트 - 주어진 샘플이 존재하는지 확인 한다`() {
         val useCase = BookmarkUseCase(repository)
-        useCase.addBookmark(ISBN, DETAIL_BOOK)
-        assertTrue(useCase.checkBookmark(ISBN))
+        useCase.addBookmark(DETAIL_BOOK)
+        assertTrue(useCase.checkBookmark(DETAIL_BOOK))
     }
 
     companion object {
-        private val ISBN = "1001621860589"
         private val DETAIL_BOOK = DetailBook(error = "0",
              title = "Python Notes for Professionals",
              subtitle = "",

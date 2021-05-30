@@ -71,11 +71,13 @@ class MainViewModel @Inject constructor (
         }
     }
 
-    fun addBookmark(isbn: String, book: DetailBook) = bookmarkUseCase.addBookmark(isbn, book)
+    fun addBookmark(book: DetailBook) = bookmarkUseCase.addBookmark(book)
 
-    fun deleteBookmark(isbn: String) = bookmarkUseCase.deleteBookmark(isbn)
+    fun deleteBookmark(book: DetailBook) = bookmarkUseCase.deleteBookmark(book)
 
-    fun checkBookmark(isbn: String): Boolean = bookmarkUseCase.checkBookmark(isbn)
+    fun checkBookmark(book: DetailBook): Boolean = bookmarkUseCase.checkBookmark(book)
+
+    fun updateBookmark(bookmark: List<Book>) = bookmarkUseCase.updateBookmark(bookmark)
 
     fun getBookmark() {
         _bookmark.value = bookmarkUseCase.getBookmark()
