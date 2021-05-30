@@ -7,6 +7,7 @@
     <string name="bookmark">BookMark</string>
     <string name="history">History</string>
     <string name="search">Search</string>
+    <string name="search_hint">Search</string>
     <string name="add_bookmark">Add Bookmark</string>
     <string name="delete_bookmark">Delete Bookmark</string>
 </resources>

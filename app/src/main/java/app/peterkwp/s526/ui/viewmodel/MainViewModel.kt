@@ -33,6 +33,18 @@ class MainViewModel @Inject constructor (
     val bookmark: LiveData<List<Book>>
         get() = _bookmark
 
+    private var _searchBookList: MutableLiveData<List<Book>> = MutableLiveData()
+    val searchBookList: LiveData<List<Book>>
+        get() = _searchBookList
+
+    private var _history: MutableLiveData<List<String>> = MutableLiveData()
+    val history: LiveData<List<String>>
+        get() = _history
+
+    private var _currentSearchQuery: MutableLiveData<String> = MutableLiveData()
+    val currentSearchQuery: LiveData<String>
+        get() = _currentSearchQuery
+
     fun getNewBook() {
         try {
             viewModelScope.launch(Dispatchers.IO) {
@@ -67,6 +79,37 @@ class MainViewModel @Inject constructor (
 
     fun getBookmark() {
         _bookmark.value = bookmarkUseCase.getBookmark()
+    }
+
+    fun searchBook(query: String, page: String = "1", func: (Int, Int) -> Unit) {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val result = searchBookUseCase.searchBook(query, page)
+                val searchList = result.books
+                val pageCount = result.page.toInt()
+                val totalCount = result.total.toInt()
+                withContext(Dispatchers.Main) {
+                    func.invoke(pageCount, totalCount)
+                    _searchBookList.value = searchList
+                }
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, "searchBook exception [${e.localizedMessage}]")
+        }
+    }
+
+    fun clearSearchResult() {
+        _searchBookList.value = listOf()
+    }
+
+    fun setCurrentSearchQuery(query: String) {
+        _currentSearchQuery.value = query
+    }
+
+    fun addHistory(query: String) = searchBookUseCase.addHistory(query)
+
+    fun getHistory() {
+        _history.value = searchBookUseCase.getHistory()
     }
 
     companion object {

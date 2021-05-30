@@ -12,6 +12,7 @@ class LibraryRepository @Inject constructor (
 
     suspend fun getNewBook() = api.getNewBooks()
     suspend fun getDetailBook(isbn: String) = api.getBookDetail(isbn)
+    suspend fun getSearchBook(query: String, page: String) = api.getSearchBook(query, page)
 
     fun addBookmark(isbn: String, book: DetailBook) {
         data.bookmark[isbn] = book
@@ -24,4 +25,11 @@ class LibraryRepository @Inject constructor (
     fun checkBookmark(isbn: String): Boolean = data.bookmark.containsKey(isbn)
 
     fun getBookmark() = data.bookmark
+
+    fun addHistory(query: String) {
+        if (data.history.contains(query)) return
+        data.history.add(query)
+    }
+
+    fun getHistory() = data.history
 }

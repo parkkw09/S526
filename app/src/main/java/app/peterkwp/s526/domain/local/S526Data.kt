@@ -4,4 +4,5 @@ import app.peterkwp.s526.domain.model.DetailBook
 
 class S526Data {
     val bookmark: HashMap<String, DetailBook> = HashMap()
+    val history: ArrayList<String> = ArrayList()
 }

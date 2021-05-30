@@ -15,5 +15,5 @@ interface Api {
     suspend fun getBookDetail(@Path("isbn") isbn: String): DetailBook
 
     @GET(DomainConst.VERSION + "/search/{query}/{page}")
-    suspend fun getSearchBook(@Path("query") isbn: String, @Path("page") page: String = "1"): ListBook
+    suspend fun getSearchBook(@Path("query") query: String, @Path("page") page: String = "1"): ListBook
 }

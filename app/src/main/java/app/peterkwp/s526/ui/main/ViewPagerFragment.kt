@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import app.peterkwp.s526.R
 import app.peterkwp.s526.databinding.FragmentViewPagerBinding
 import app.peterkwp.s526.ui.data.TabType
+import app.peterkwp.s526.ui.viewmodel.MainViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFragment: Fragment() {
+
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,6 +26,7 @@ class ViewPagerFragment: Fragment() {
         val binding = FragmentViewPagerBinding.inflate(inflater, container, false)
         val tabLayout = binding.tabs
         val viewPager = binding.viewPager
+        val search = binding.search
 
         viewPager.adapter = BookPagerAdapter(this)
 
@@ -31,6 +37,12 @@ class ViewPagerFragment: Fragment() {
         }.attach()
 
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+
+        search.setOnClickListener {
+            val direction = ViewPagerFragmentDirections.actionViewPagerFragmentToSearchFragment("")
+            viewModel.setCurrentSearchQuery("")
+            it.findNavController().navigate(direction)
+        }
 
         return binding.root
     }

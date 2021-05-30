@@ -1,4 +1,4 @@
-package app.peterkwp.s526.ui.bookmark
+package app.peterkwp.s526.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import app.peterkwp.s526.domain.model.Book
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
-class BookmarkAdapter(
+class SearchAdapter(
     private val glideManager: RequestManager,
     private val func : (Book) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -18,8 +18,15 @@ class BookmarkAdapter(
     private val bookList: MutableList<Book> = mutableListOf()
 
     fun addAllData(list: List<Book>) {
+        bookList.clear()
         bookList.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun addAllMore(list: List<Book>) {
+        val size = bookList.size
+        bookList.addAll(list)
+        notifyItemRangeInserted(size, list.size)
     }
 
     fun updateData(index: Int, item: Book) {
@@ -36,6 +43,8 @@ class BookmarkAdapter(
         bookList.clear()
         notifyDataSetChanged()
     }
+
+    fun size() = bookList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 //        Log.d(TAG, "onCreateViewHolder() viewType[$viewType]")

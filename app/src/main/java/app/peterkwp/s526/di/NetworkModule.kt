@@ -36,6 +36,6 @@ class NetworkModule {
         .build()
 
     companion object {
-        private const val TAG = "S526NetworkModule"
+        private const val TAG = "NetworkModule"
     }
 }

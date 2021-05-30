@@ -28,7 +28,7 @@ class NewBookAdapter(
 //        Log.d(TAG, "onBindViewHolder() position[$position]")
         val book = getItem(position)
         (holder as BookViewHolder).apply {
-            bind(book)
+            bind(position, book)
             itemView.setOnClickListener { func.invoke(book) }
         }
     }
@@ -37,8 +37,9 @@ class NewBookAdapter(
         private val binding: ItemBookBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Book) {
+        fun bind(index: Int, item: Book) {
 //            Log.d(TAG, "bind() item[$item]")
+            val count = "#$index"
             with(binding) {
                 this.bookTitle.text = item.title
                 this.bookIsbn.text = item.isbn
@@ -51,6 +52,7 @@ class NewBookAdapter(
                         .apply(RequestOptions().error(R.drawable.book))
                         .into(it)
                 }
+                this.count.text = count
             }
         }
     }
