@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 
 class NewBookUseCaseTest {
 
-    val mockServer = MockWebServer()
+    private val mockServer = MockWebServer()
     lateinit var repository: LibraryRepository
 
     @Before
