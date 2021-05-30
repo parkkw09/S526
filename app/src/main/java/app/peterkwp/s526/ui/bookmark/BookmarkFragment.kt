@@ -59,6 +59,8 @@ class BookmarkFragment: Fragment() {
         ItemTouchHelper(ItemMoveCallback(adapter)).apply {
             attachToRecyclerView(binding.bookmarkList)
         }
+        binding.ascending.setOnClickListener { adapter.sortList() }
+        binding.descending.setOnClickListener { adapter.reverseSortList() }
         subscribeUi(adapter)
         return binding.root
     }

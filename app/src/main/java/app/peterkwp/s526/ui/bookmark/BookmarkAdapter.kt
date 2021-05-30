@@ -10,6 +10,7 @@ import app.peterkwp.s526.domain.model.Book
 import app.peterkwp.s526.util.Log
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
+import java.util.*
 
 class BookmarkAdapter(
     private val glideManager: RequestManager,
@@ -35,6 +36,16 @@ class BookmarkAdapter(
 
     fun clearData() {
         bookList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun sortList() {
+        bookList.sortBy { it.title }
+        notifyDataSetChanged()
+    }
+
+    fun reverseSortList() {
+        bookList.sortByDescending { it.title }
         notifyDataSetChanged()
     }
 

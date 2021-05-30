@@ -15,6 +15,7 @@ class LibraryRepository @Inject constructor (
     suspend fun getSearchBook(query: String, page: String) = api.getSearchBook(query, page)
 
     fun addBookmark(book: Book) {
+        if (data.bookmark.contains(book)) return
         data.bookmark.add(book)
     }
 

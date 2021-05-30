@@ -3,6 +3,8 @@
     <string name="new_book">New</string>
     <string name="detail_book">Detail Book</string>
     <string name="bookmark">BookMark</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
     <string name="history">History</string>
     <string name="search">Search</string>
     <string name="search_hint">Search</string>

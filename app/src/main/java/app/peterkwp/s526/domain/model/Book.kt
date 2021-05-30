@@ -2,7 +2,7 @@ package app.peterkwp.s526.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Book(
+data class Book (
     @SerializedName("isbn13") val isbn: String = "",
     val title: String = "",
     val subtitle: String = "",

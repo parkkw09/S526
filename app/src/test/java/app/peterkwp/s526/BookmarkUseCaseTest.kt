@@ -50,6 +50,14 @@ class BookmarkUseCaseTest {
         assertTrue(useCase.checkBookmark(DETAIL_BOOK))
     }
 
+    @Test
+    fun `북마크 업데이트 테스트 - 주어진 샘플이 업데이트 되는지 확인한다`() {
+        val useCase = BookmarkUseCase(repository)
+        useCase.addBookmark(DETAIL_BOOK)
+        useCase.updateBookmark(UPDATE_BOOK_LIST)
+        assertEquals(3, useCase.getBookmark().size)
+    }
+
     companion object {
         private val DETAIL_BOOK = DetailBook(error = "0",
              title = "Python Notes for Professionals",
@@ -75,5 +83,6 @@ class BookmarkUseCaseTest {
             url = "https://itbook.store/books/1001621860589")
         private val BOOK_LIST = listOf(ITEM_BOOK)
         private val EMPTY_BOOK_LIST = listOf<Book>()
+        private val UPDATE_BOOK_LIST = listOf(ITEM_BOOK, ITEM_BOOK, ITEM_BOOK)
     }
 }
