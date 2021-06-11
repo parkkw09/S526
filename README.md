@@ -4,4 +4,4 @@ mvvm design test
 - android aac
 - hilt
 - coroutines
-- retroit/okhttp/gson/glide
+- retrofit/okhttp/gson/glide
