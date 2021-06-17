@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.peterkwp.s526.databinding.FragmentHistoryBinding
-import app.peterkwp.s526.ui.book.HistoryAdapter
 import app.peterkwp.s526.ui.main.ViewPagerFragmentDirections
 import app.peterkwp.s526.ui.viewmodel.MainViewModel
 import app.peterkwp.s526.util.Log

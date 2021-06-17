@@ -1,4 +1,4 @@
-package app.peterkwp.s526.ui.book
+package app.peterkwp.s526.ui.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
