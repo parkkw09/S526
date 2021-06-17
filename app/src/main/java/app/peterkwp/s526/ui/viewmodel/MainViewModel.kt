@@ -90,9 +90,37 @@ class MainViewModel @Inject constructor (
                 val searchList = result.books
                 val pageCount = result.page.toInt()
                 val totalCount = result.total.toInt()
+
                 withContext(Dispatchers.Main) {
                     func.invoke(pageCount, totalCount)
+                    if (page == "1") {
+                        _searchBookList.value = emptyList()
+                    }
                     _searchBookList.value = searchList
+                }
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, "searchBook exception [${e.localizedMessage}]")
+        }
+    }
+
+    fun searchBook2(query: String, page: String = "1", func: (Int, Int) -> Unit) {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val words = query.split("|")
+                val books = arrayListOf<Book>()
+                words.forEach { word ->
+                    val result = searchBookUseCase.searchBook(word, page)
+                    books.addAll(result.books.toList())
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (page == "1") {
+                        _searchBookList.value = emptyList()
+                    }
+                    _searchBookList.value = books.distinctBy { book ->
+                        book.isbn
+                    }
                 }
             }
         } catch(e: Exception) {

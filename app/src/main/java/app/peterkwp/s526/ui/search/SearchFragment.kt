@@ -30,15 +30,18 @@ class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
 
     private var pageCount = 1
+    private var currentPage = 1
     private var loading = false
     private var complete = false
 
     private fun subscribeUi(adapter: SearchAdapter) {
         Log.d(TAG, "subscribeUi()")
         viewModel.searchBookList.observe(viewLifecycleOwner, { bookList ->
-            Log.d(TAG, "subscribeUi() viewModel.searchBookList [$bookList]")
-            when (pageCount == 1) {
-                true -> adapter.addAllData(bookList)
+            Log.d(TAG, "subscribeUi() viewModel.searchBookList [$bookList] pageCount[$pageCount]")
+            when (currentPage == 1) {
+                true -> {
+                    adapter.addAllData(bookList)
+                }
                 false -> adapter.addAllMore(bookList)
             }
         })
@@ -57,6 +60,7 @@ class SearchFragment: Fragment() {
         val adapter = binding.searchList.adapter as SearchAdapter
         viewModel.searchBook(query, pageCount.toString()) { page, total ->
             Log.d(TAG, "processSearch() current page[$page] totalCount[$total]")
+            currentPage = page
             if (adapter.size() >= total && pageCount != 1) {
                 loading = false
                 complete = true
@@ -123,6 +127,7 @@ class SearchFragment: Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 hideSoftKeyboard()
                 query?.let {
+                    currentPage = 1
                     pageCount = 1
                     loading = false
                     complete = false
@@ -145,6 +150,7 @@ class SearchFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val searchQuery = args.query
         Log.d(TAG, "onViewCreated() searchQuery[$searchQuery]")
+        currentPage = 1
         pageCount = 1
         loading = false
         complete = false
@@ -159,6 +165,7 @@ class SearchFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView()")
+        currentPage = 1
         pageCount = 1
         loading = false
         complete = false
