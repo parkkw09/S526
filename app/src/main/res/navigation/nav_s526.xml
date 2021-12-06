@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/view_pager_fragment"
-        android:name="app.peterkwp.s526.ui.main.ViewPagerFragment"
+        android:name="app.peter.s526.ui.main.ViewPagerFragment"
         tools:layout="@layout/fragment_view_pager">
 
         <action
@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/detail_fragment"
-        android:name="app.peterkwp.s526.ui.detail.DetailFragment"
+        android:name="app.peter.s526.ui.detail.DetailFragment"
         tools:layout="@layout/fragment_detail">
 
         <argument
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/search_fragment"
-        android:name="app.peterkwp.s526.ui.search.SearchFragment"
+        android:name="app.peter.s526.ui.search.SearchFragment"
         tools:layout="@layout/fragment_search">
 
         <argument
