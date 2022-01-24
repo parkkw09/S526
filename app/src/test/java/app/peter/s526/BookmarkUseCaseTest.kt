@@ -1,11 +1,11 @@
 package app.peter.s526
 
-import app.peter.s526.domain.local.S526Data
+import app.peter.s526.data.source.local.S526Data
 import app.peter.s526.domain.model.Book
 import app.peter.s526.domain.model.DetailBook
 import app.peter.s526.domain.model.Pdf
-import app.peter.s526.domain.remote.Api
-import app.peter.s526.domain.repository.LibraryRepository
+import app.peter.s526.data.source.remote.Api
+import app.peter.s526.data.repositories.LibraryRepository
 import app.peter.s526.domain.usecase.BookmarkUseCase
 import org.junit.Before
 import org.junit.Test

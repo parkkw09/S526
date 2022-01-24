@@ -2,7 +2,7 @@ package app.peter.s526.domain.usecase
 
 import app.peter.s526.domain.model.Book
 import app.peter.s526.domain.model.DetailBook
-import app.peter.s526.domain.repository.LibraryRepository
+import app.peter.s526.data.repositories.LibraryRepository
 import javax.inject.Inject
 
 class BookmarkUseCase @Inject constructor(

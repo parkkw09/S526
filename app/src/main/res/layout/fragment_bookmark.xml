@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:context=".ui.MainActivity"
+        tools:context=".presentation.view.main.MainActivity"
         tools:listitem="@layout/item_book" />
 
     <Button

@@ -69,7 +69,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/default_margin_item"
             android:layout_marginBottom="@dimen/default_margin_item"
-            tools:context=".ui.MainActivity"
+            tools:context=".presentation.view.main.MainActivity"
             tools:listitem="@layout/item_book" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
