@@ -23,10 +23,10 @@ class NewBookFragment: Fragment() {
     private val glide: RequestManager by lazy { GlideApp.with(this) }
 
     private fun subscribeUi(adapter : NewBookAdapter) {
-        viewModel.bookList.observe(viewLifecycleOwner, { bookList ->
+        viewModel.bookList.observe(viewLifecycleOwner) { bookList ->
             Log.d(TAG, "subscribeUi() viewModel.bookList [$bookList]")
             adapter.submitList(bookList)
-        })
+        }
     }
 
     private fun launchUi() {
