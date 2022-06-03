@@ -1,16 +1,21 @@
 package app.peter.s526.presentation.view.main
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.peter.s526.application.Log
 import app.peter.s526.domain.model.Book
 import app.peter.s526.domain.model.DetailBook
 import app.peter.s526.domain.usecase.BookmarkUseCase
 import app.peter.s526.domain.usecase.DetailBookUseCase
 import app.peter.s526.domain.usecase.NewBookUseCase
 import app.peter.s526.domain.usecase.SearchBookUseCase
-import app.peter.s526.application.Log
+import com.google.android.gms.appset.AppSet
+import com.google.android.gms.appset.AppSetIdClient
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,29 +50,37 @@ class MainViewModel @Inject constructor (
     val currentSearchQuery: LiveData<String>
         get() = _currentSearchQuery
 
+    var reviewManager: ReviewManager? = null
+    var client: AppSetIdClient? = null
+
+    fun initClient(context: Context) {
+        client = AppSet.getClient(context)
+        reviewManager = ReviewManagerFactory.create(context)
+    }
+
     fun getNewBook() {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 val list = newBookUseCase.getNewBook()
                 withContext(Dispatchers.Main) {
                     _bookList.value = list
                 }
+            } catch(e: Exception) {
+                Log.e(TAG, "getNewBook exception [${e.localizedMessage}]")
             }
-        } catch(e: Exception) {
-            Log.e(TAG, "getNewBook exception [${e.localizedMessage}]")
         }
     }
 
     fun getDetailBook(isbn: String, func: (information: DetailBook) -> Unit) {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 val book = detailBookUseCase.getDetailBook(isbn)
                 withContext(Dispatchers.Main) {
                     func.invoke(book)
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "getDetailBook exception [${e.localizedMessage}]")
             }
-        } catch(e: Exception) {
-            Log.e(TAG, "getDetailBook exception [${e.localizedMessage}]")
         }
     }
 
@@ -84,8 +97,8 @@ class MainViewModel @Inject constructor (
     }
 
     fun searchBook(query: String, page: String = "1", func: (Int, Int) -> Unit) {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 val result = searchBookUseCase.searchBook(query, page)
                 val searchList = result.books
                 val pageCount = result.page.toInt()
@@ -98,15 +111,15 @@ class MainViewModel @Inject constructor (
                     }
                     _searchBookList.value = searchList
                 }
+            } catch(e: Exception) {
+                Log.e(TAG, "searchBook exception [${e.localizedMessage}]")
             }
-        } catch(e: Exception) {
-            Log.e(TAG, "searchBook exception [${e.localizedMessage}]")
         }
     }
 
     fun searchBook2(query: String, page: String = "1", func: (Int, Int) -> Unit) {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 val words = query.split("|")
                 val books = arrayListOf<Book>()
                 words.forEach { word ->
@@ -122,9 +135,9 @@ class MainViewModel @Inject constructor (
                         book.isbn
                     }
                 }
+            } catch(e: Exception) {
+                Log.e(TAG, "searchBook exception [${e.localizedMessage}]")
             }
-        } catch(e: Exception) {
-            Log.e(TAG, "searchBook exception [${e.localizedMessage}]")
         }
     }
 
