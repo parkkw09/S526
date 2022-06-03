@@ -1,5 +1,6 @@
 package app.peter.s526.presentation.view.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -132,6 +133,7 @@ class ViewPagerFragment: Fragment() {
 
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
+            viewModel.appName?.let { appName.text = it }
             appName.setOnClickListener { testAppSetID() }
             review.setOnClickListener { testReviewManager() }
             search.setOnClickListener {

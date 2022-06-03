@@ -3,6 +3,7 @@ package app.peter.s526.presentation.view.main
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import app.peter.s526.R
 import app.peter.s526.application.Log
 import app.peter.s526.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private fun initializeApplication() {
-        viewModel.initClient(applicationContext)
+        viewModel.initClient(applicationContext, resources.getString(R.string.app_name))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

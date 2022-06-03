@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.peter.s526.application.Log
+import app.peter.s526.application.Utils
 import app.peter.s526.domain.model.Book
 import app.peter.s526.domain.model.DetailBook
 import app.peter.s526.domain.usecase.BookmarkUseCase
@@ -50,12 +51,14 @@ class MainViewModel @Inject constructor (
     val currentSearchQuery: LiveData<String>
         get() = _currentSearchQuery
 
+    var appName: String? = null
     var reviewManager: ReviewManager? = null
     var client: AppSetIdClient? = null
 
-    fun initClient(context: Context) {
+    fun initClient(context: Context, appName: String) {
         client = AppSet.getClient(context)
         reviewManager = ReviewManagerFactory.create(context)
+        this.appName = Utils.convertAppName(context, appName)
     }
 
     fun getNewBook() {
