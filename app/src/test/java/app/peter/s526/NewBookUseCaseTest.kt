@@ -1,11 +1,12 @@
 package app.peter.s526
 
-import app.peter.s526.data.source.local.S526Data
-import app.peter.s526.domain.model.Book
-import app.peter.s526.domain.model.ListBook
-import app.peter.s526.data.source.remote.Api
 import app.peter.s526.data.repositories.LibraryRepository
-import app.peter.s526.domain.usecase.NewBookUseCase
+import app.peter.s526.data.repositories.impl.LibraryRepositoryImpl
+import app.peter.s526.data.source.local.S526Data
+import app.peter.s526.data.source.remote.Api
+import app.peter.s526.domain.model.NewBook
+import app.peter.s526.domain.model.NewListBook
+import app.peter.s526.domain.usecase.impl.NewBookUseCaseImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -33,7 +34,7 @@ class NewBookUseCaseTest {
             .build()
             .create(Api::class.java)
         val data = S526Data()
-        repository = LibraryRepository(api, data)
+        repository = LibraryRepositoryImpl(api, data)
     }
 
     @After
@@ -43,7 +44,7 @@ class NewBookUseCaseTest {
 
     @Test
     fun `새로운 책 읽어오기 테스트 - 정상적으로 데이터를 읽어와야 한다`() {
-        val useCase = NewBookUseCase(repository)
+        val useCase = NewBookUseCaseImpl(repository)
         runBlocking {
             mockServer.enqueue(MockResponse().setBody(Gson().toJson(RESPONSE)))
             val list = useCase.getNewBook()
@@ -52,12 +53,12 @@ class NewBookUseCaseTest {
     }
 
     companion object {
-        private val ITEM_BOOK = Book(isbn = "1001621860589",
+        private val ITEM_BOOK = NewBook(isbn = "1001621860589",
             title = "Python Notes for Professionals",
             subtitle = "",
             price = "\$0.00",
             image = "https://itbook.store/img/books/1001621860589.png",
             url = "https://itbook.store/books/1001621860589")
-        private val RESPONSE = ListBook(error = "0", total = "20", books = listOf(ITEM_BOOK))
+        private val RESPONSE = NewListBook(error = "0", total = "20", page = "1", books = listOf(ITEM_BOOK))
     }
 }

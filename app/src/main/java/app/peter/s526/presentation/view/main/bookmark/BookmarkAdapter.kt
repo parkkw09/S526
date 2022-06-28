@@ -6,29 +6,29 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.R
 import app.peter.s526.databinding.ItemBookBinding
-import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.model.NewBook
 import app.peter.s526.application.Log
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
 class BookmarkAdapter(
     private val glideManager: RequestManager,
-    private val onClick : (Book) -> Unit
+    private val onClick : (NewBook) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperListener {
 
-    private val bookList: MutableList<Book> = mutableListOf()
+    private val bookList: MutableList<NewBook> = mutableListOf()
 
-    fun addAllData(list: List<Book>) {
+    fun addAllData(list: List<NewBook>) {
         bookList.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun updateData(index: Int, item: Book) {
+    fun updateData(index: Int, item: NewBook) {
         bookList[index] = item
         notifyItemChanged(index)
     }
 
-    fun removeData(index: Int, item: Book) {
+    fun removeData(index: Int, item: NewBook) {
         bookList.remove(item)
         notifyItemRemoved(index)
     }
@@ -86,7 +86,7 @@ class BookmarkAdapter(
         private val binding: ItemBookBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(index: Int, item: Book) {
+        fun bind(index: Int, item: NewBook) {
 //            Log.d(TAG, "bind() item[$item]")
             val count = "#$index"
             with(binding) {

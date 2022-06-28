@@ -1,41 +1,19 @@
 package app.peter.s526.data.repositories
 
-import app.peter.s526.data.source.local.S526Data
-import app.peter.s526.domain.model.Book
-import app.peter.s526.data.source.remote.Api
-import javax.inject.Inject
+import app.peter.s526.data.entities.Book
+import app.peter.s526.data.entities.DetailBook
+import app.peter.s526.data.entities.ListBook
 
-class LibraryRepository @Inject constructor (
-    private val api: Api,
-    private val data: S526Data
-) {
+interface LibraryRepository {
+    suspend fun getNewBook(): ListBook
+    suspend fun getDetailBook(isbn: String): DetailBook
+    suspend fun getSearchBook(query: String, page: String): ListBook
 
-    suspend fun getNewBook() = api.getNewBooks()
-    suspend fun getDetailBook(isbn: String) = api.getBookDetail(isbn)
-    suspend fun getSearchBook(query: String, page: String) = api.getSearchBook(query, page)
-
-    fun addBookmark(book: Book) {
-        if (data.bookmark.contains(book)) return
-        data.bookmark.add(book)
-    }
-
-    fun deleteBookmark(book: Book) {
-        data.bookmark.remove(book)
-    }
-
-    fun checkBookmark(book: Book): Boolean = data.bookmark.contains(book)
-
-    fun updateBookmark(bookmark: List<Book>) {
-        data.bookmark.clear()
-        data.bookmark.addAll(bookmark)
-    }
-
-    fun getBookmark() = data.bookmark
-
-    fun addHistory(query: String) {
-        if (data.history.contains(query)) return
-        data.history.add(query)
-    }
-
-    fun getHistory() = data.history
+    fun addBookmark(book: Book)
+    fun deleteBookmark(book: Book)
+    fun checkBookmark(book: Book) : Boolean
+    fun updateBookmark(bookmark: List<Book>)
+    fun getBookmark(): ArrayList<Book>
+    fun addHistory(query: String)
+    fun getHistory(): ArrayList<String>
 }

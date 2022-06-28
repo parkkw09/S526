@@ -6,35 +6,35 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.R
 import app.peter.s526.databinding.ItemBookBinding
-import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.model.NewBook
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
 class SearchAdapter(
     private val glideManager: RequestManager,
-    private val func : (Book) -> Unit
+    private val func : (NewBook) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val bookList: MutableList<Book> = mutableListOf()
+    private val bookList: MutableList<NewBook> = mutableListOf()
 
-    fun addAllData(list: List<Book>) {
+    fun addAllData(list: List<NewBook>) {
         bookList.clear()
         bookList.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun addAllMore(list: List<Book>) {
+    fun addAllMore(list: List<NewBook>) {
         val size = bookList.size
         bookList.addAll(list)
         notifyItemRangeInserted(size, list.size)
     }
 
-    fun updateData(index: Int, item: Book) {
+    fun updateData(index: Int, item: NewBook) {
         bookList[index] = item
         notifyItemChanged(index)
     }
 
-    fun removeData(index: Int, item: Book) {
+    fun removeData(index: Int, item: NewBook) {
         bookList.remove(item)
         notifyItemRemoved(index)
     }
@@ -68,7 +68,7 @@ class SearchAdapter(
         private val binding: ItemBookBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(index: Int, item: Book) {
+        fun bind(index: Int, item: NewBook) {
 //            Log.d(TAG, "bind() item[$item]")
             val count = "#$index"
             with(binding) {

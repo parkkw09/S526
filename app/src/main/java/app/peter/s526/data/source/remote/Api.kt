@@ -1,7 +1,7 @@
 package app.peter.s526.data.source.remote
 
-import app.peter.s526.domain.model.DetailBook
-import app.peter.s526.domain.model.ListBook
+import app.peter.s526.data.entities.DetailBook
+import app.peter.s526.data.entities.ListBook
 import retrofit2.http.GET
 import retrofit2.http.Path
 

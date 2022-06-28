@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.R
 import app.peter.s526.databinding.ItemBookBinding
-import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.model.NewBook
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
 class NewBookAdapter(
     private val glideManager: RequestManager,
-    private val func : (Book) -> Unit
-) : ListAdapter<Book, RecyclerView.ViewHolder>(BookDiffCallback()) {
+    private val func : (NewBook) -> Unit
+) : ListAdapter<NewBook, RecyclerView.ViewHolder>(BookDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 //        Log.d(TAG, "onCreateViewHolder() viewType[$viewType]")
@@ -37,7 +37,7 @@ class NewBookAdapter(
         private val binding: ItemBookBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(index: Int, item: Book) {
+        fun bind(index: Int, item: NewBook) {
 //            Log.d(TAG, "bind() item[$item]")
             val count = "#$index"
             with(binding) {
@@ -62,13 +62,13 @@ class NewBookAdapter(
     }
 }
 
-private class BookDiffCallback : DiffUtil.ItemCallback<Book>() {
+private class BookDiffCallback : DiffUtil.ItemCallback<NewBook>() {
 
-    override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
+    override fun areItemsTheSame(oldItem: NewBook, newItem: NewBook): Boolean {
         return oldItem.isbn == newItem.isbn
     }
 
-    override fun areContentsTheSame(oldItem: Book, newItem: Book): Boolean {
+    override fun areContentsTheSame(oldItem: NewBook, newItem: NewBook): Boolean {
         return oldItem == newItem
     }
 }

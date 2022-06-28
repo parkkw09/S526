@@ -10,10 +10,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import app.peter.s526.R
 import app.peter.s526.databinding.FragmentDetailBinding
-import app.peter.s526.domain.model.DetailBook
 import app.peter.s526.presentation.view.main.MainViewModel
 import app.peter.s526.presentation.util.GlideApp
 import app.peter.s526.application.Log
+import app.peter.s526.domain.model.NewDetailBook
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
@@ -55,7 +55,7 @@ class DetailFragment: Fragment() {
         }
     }
 
-    private fun checkBookmark(information: DetailBook, view: View) {
+    private fun checkBookmark(information: NewDetailBook, view: View) {
         when (viewModel.checkBookmark(information)) {
             true -> {
                 viewModel.deleteBookmark(information)

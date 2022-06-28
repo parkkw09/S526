@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.peter.s526.application.Log
 import app.peter.s526.application.Utils
-import app.peter.s526.domain.model.Book
-import app.peter.s526.domain.model.DetailBook
+import app.peter.s526.domain.model.NewBook
+import app.peter.s526.domain.model.NewDetailBook
 import app.peter.s526.domain.usecase.BookmarkUseCase
 import app.peter.s526.domain.usecase.DetailBookUseCase
 import app.peter.s526.domain.usecase.NewBookUseCase
@@ -31,16 +31,16 @@ class MainViewModel @Inject constructor (
     private val searchBookUseCase: SearchBookUseCase
 ) : ViewModel() {
 
-    private var _bookList: MutableLiveData<List<Book>> = MutableLiveData()
-    val bookList: LiveData<List<Book>>
+    private var _bookList: MutableLiveData<List<NewBook>> = MutableLiveData()
+    val bookList: LiveData<List<NewBook>>
         get() = _bookList
 
-    private var _bookmark: MutableLiveData<List<Book>> = MutableLiveData()
-    val bookmark: LiveData<List<Book>>
+    private var _bookmark: MutableLiveData<List<NewBook>> = MutableLiveData()
+    val bookmark: LiveData<List<NewBook>>
         get() = _bookmark
 
-    private var _searchBookList: MutableLiveData<List<Book>> = MutableLiveData()
-    val searchBookList: LiveData<List<Book>>
+    private var _searchBookList: MutableLiveData<List<NewBook>> = MutableLiveData()
+    val searchBookList: LiveData<List<NewBook>>
         get() = _searchBookList
 
     private var _history: MutableLiveData<List<String>> = MutableLiveData()
@@ -74,7 +74,7 @@ class MainViewModel @Inject constructor (
         }
     }
 
-    fun getDetailBook(isbn: String, func: (information: DetailBook) -> Unit) {
+    fun getDetailBook(isbn: String, func: (information: NewDetailBook) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val book = detailBookUseCase.getDetailBook(isbn)
@@ -87,13 +87,13 @@ class MainViewModel @Inject constructor (
         }
     }
 
-    fun addBookmark(book: DetailBook) = bookmarkUseCase.addBookmark(book)
+    fun addBookmark(book: NewDetailBook) = bookmarkUseCase.addBookmark(book)
 
-    fun deleteBookmark(book: DetailBook) = bookmarkUseCase.deleteBookmark(book)
+    fun deleteBookmark(book: NewDetailBook) = bookmarkUseCase.deleteBookmark(book)
 
-    fun checkBookmark(book: DetailBook): Boolean = bookmarkUseCase.checkBookmark(book)
+    fun checkBookmark(book: NewDetailBook): Boolean = bookmarkUseCase.checkBookmark(book)
 
-    fun updateBookmark(bookmark: List<Book>) = bookmarkUseCase.updateBookmark(bookmark)
+    fun updateBookmark(bookmark: List<NewBook>) = bookmarkUseCase.updateBookmark(bookmark)
 
     fun getBookmark() {
         _bookmark.value = bookmarkUseCase.getBookmark()
@@ -124,7 +124,7 @@ class MainViewModel @Inject constructor (
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val words = query.split("|")
-                val books = arrayListOf<Book>()
+                val books = arrayListOf<NewBook>()
                 words.forEach { word ->
                     val result = searchBookUseCase.searchBook(word, page)
                     books.addAll(result.books.toList())

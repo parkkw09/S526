@@ -1,4 +1,4 @@
-package app.peter.s526.data.util
+package app.peter.s526.data.module
 
 import app.peter.s526.application.Log
 import dagger.Module
