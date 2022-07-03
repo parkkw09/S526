@@ -9,6 +9,11 @@ interface LibraryRepository {
     suspend fun getDetailBook(isbn: String): DetailBook
     suspend fun getSearchBook(query: String, page: String): ListBook
 
+    suspend fun getCurrentBestSeller(): ListBook
+    suspend fun getCurrentBestSellerFull(): ListBook
+    suspend fun getCurrentBestSellerFromTarget(age: String): ListBook
+    suspend fun getReview(isbn: Long): ListBook
+
     fun addBookmark(book: Book)
     fun deleteBookmark(book: Book)
     fun checkBookmark(book: Book) : Boolean

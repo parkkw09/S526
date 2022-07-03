@@ -1,6 +1,8 @@
 package app.peter.s526.data.repositories.impl
 
 import app.peter.s526.data.entities.Book
+import app.peter.s526.data.entities.DetailBook
+import app.peter.s526.data.entities.ListBook
 import app.peter.s526.data.repositories.LibraryRepository
 import app.peter.s526.data.source.local.S526Data
 import app.peter.s526.data.source.remote.Api
@@ -12,9 +14,37 @@ class LibraryRepositoryImpl @Inject constructor (
     private val localSource: S526Data
 ): LibraryRepository {
 
-    override suspend fun getNewBook() = remoteSource.getNewBooks()
-    override suspend fun getDetailBook(isbn: String) = remoteSource.getBookDetail(isbn)
-    override suspend fun getSearchBook(query: String, page: String) = remoteSource.getSearchBook(query, page)
+    override suspend fun getNewBook(): ListBook {
+        remoteSource.getCurrentBestSeller()
+        remoteSource.getCurrentBestSellerFull()
+        remoteSource.getCurrentBestSellerFromTarget(age = "10")
+        remoteSource.getReview(1001621860589)
+        return ListBook()
+    }
+
+    override suspend fun getDetailBook(isbn: String): DetailBook {
+        TODO("Deprecated")
+    }
+
+    override suspend fun getSearchBook(query: String, page: String): ListBook {
+        TODO("Deprecated")
+    }
+
+    override suspend fun getCurrentBestSeller(): ListBook {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCurrentBestSellerFull(): ListBook {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCurrentBestSellerFromTarget(age: String): ListBook {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getReview(isbn: Long): ListBook {
+        TODO("Not yet implemented")
+    }
 
     override fun addBookmark(book: Book) {
         if (localSource.bookmark.contains(book)) return
