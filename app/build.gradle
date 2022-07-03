@@ -7,7 +7,7 @@ plugins {
 }
 
 def homePath = System.properties['user.home']
-def Properties localProps = new Properties()
+def localProps = new Properties()
 localProps.load(new File(homePath + '/Documents/private/key/app_props.properties').newDataInputStream())
 
 android {
