@@ -7,15 +7,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "30.0.3"
+    compileSdk 33
 
     defaultConfig {
         applicationId "app.peter.s526"
-        minSdkVersion 28
-        targetSdkVersion 32
-        versionCode 5
-        versionName "1.0.4"
+        minSdk 28
+        targetSdk 33
+        versionCode 7
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
