@@ -69,10 +69,14 @@ class ViewPagerFragment: Fragment() {
                         flow.addOnCanceledListener { Log.d(TAG, "OnCancel()") }
                     }
                 } else {
-                    // There was some problem, log or handle the error code.
-                    @ReviewErrorCode val reviewErrorCode: Int =
-                        (task.exception as ReviewException).errorCode
-                    Log.d(TAG, "Successful false =$reviewErrorCode")
+                    try {
+                        // There was some problem, log or handle the error code.
+                        @ReviewErrorCode val reviewErrorCode: Int =
+                            (task.exception as ReviewException).errorCode
+                        Log.d(TAG, "Successful false = $reviewErrorCode")
+                    } catch (e: Exception) {
+                        Log.d(TAG, "review error code Exception = ${e.localizedMessage}")
+                    }
                 }
             }
         }
