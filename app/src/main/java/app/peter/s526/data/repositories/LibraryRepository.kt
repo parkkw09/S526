@@ -5,7 +5,7 @@ import app.peter.s526.data.entities.DetailBook
 import app.peter.s526.data.entities.ListBook
 
 interface LibraryRepository {
-    suspend fun getNewBook(): ListBook
+    suspend fun getNewBook(page: String = "1"): ListBook
     suspend fun getDetailBook(isbn: String): DetailBook
     suspend fun getSearchBook(query: String, page: String): ListBook
 

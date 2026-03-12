@@ -35,6 +35,10 @@ class MainViewModel @Inject constructor (
     val bookList: LiveData<List<NewBook>>
         get() = _bookList
 
+    private var currentNewBookPage = 1
+    private var isNewBookLoading = false
+    private var hasMoreNewBooks = true
+
     private var _bookmark: MutableLiveData<List<NewBook>> = MutableLiveData()
     val bookmark: LiveData<List<NewBook>>
         get() = _bookmark
@@ -62,14 +66,37 @@ class MainViewModel @Inject constructor (
     }
 
     fun getNewBook() {
+        currentNewBookPage = 1
+        hasMoreNewBooks = true
+        _bookList.value = emptyList()
+        loadNewBooks(currentNewBookPage)
+    }
+
+    fun getNextNewBook() {
+        if (isNewBookLoading || !hasMoreNewBooks) return
+        loadNewBooks(currentNewBookPage)
+    }
+
+    private fun loadNewBooks(page: Int) {
+        isNewBookLoading = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val list = newBookUseCase.getNewBook()
+                val result = newBookUseCase.getNewBook(page.toString())
+                val newBooks = result.books
+                val total = result.total.toIntOrNull() ?: 0
+
                 withContext(Dispatchers.Main) {
-                    _bookList.value = list
+                    val current = _bookList.value.orEmpty()
+                    _bookList.value = current + newBooks
+                    currentNewBookPage++
+                    hasMoreNewBooks = current.size + newBooks.size < total && newBooks.isNotEmpty()
+                    isNewBookLoading = false
                 }
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 Log.e(TAG, "getNewBook exception [${e.localizedMessage}]")
+                withContext(Dispatchers.Main) {
+                    isNewBookLoading = false
+                }
             }
         }
     }

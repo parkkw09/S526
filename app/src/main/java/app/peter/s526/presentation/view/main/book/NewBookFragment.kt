@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.databinding.FragmentNewBookBinding
 import app.peter.s526.presentation.view.main.ViewPagerFragmentDirections
 import app.peter.s526.presentation.view.main.MainViewModel
@@ -24,8 +25,8 @@ class NewBookFragment: Fragment() {
 
     private fun subscribeUi(adapter : NewBookAdapter) {
         viewModel.bookList.observe(viewLifecycleOwner) { bookList ->
-            Log.d(TAG, "subscribeUi() viewModel.bookList [$bookList]")
-            adapter.submitList(bookList)
+            Log.d(TAG, "subscribeUi() viewModel.bookList [${bookList.size}]")
+            adapter.submitList(bookList.toList())
         }
     }
 
@@ -45,13 +46,26 @@ class NewBookFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentNewBookBinding.inflate(inflater, container, false)
+        val layoutManager = LinearLayoutManager(context)
         val adapter = NewBookAdapter(glide) {
             Log.d(TAG, "onCreateView() item click [${it.isbn}]")
             navigateToDetail(binding.root, it.isbn)
         }
         binding.bookList.apply {
-            layoutManager = LinearLayoutManager(context)
+            this.layoutManager = layoutManager
             this.adapter = adapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0) {
+                        val totalItemCount = layoutManager.itemCount
+                        val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                        if (lastVisibleItem >= totalItemCount - 5) {
+                            viewModel.getNextNewBook()
+                        }
+                    }
+                }
+            })
         }
         subscribeUi(adapter)
         return binding.root
@@ -60,6 +74,11 @@ class NewBookFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume()")
         launchUi()
     }
 

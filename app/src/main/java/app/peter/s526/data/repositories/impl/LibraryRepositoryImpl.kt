@@ -5,6 +5,8 @@ import app.peter.s526.data.repositories.LibraryRepository
 import app.peter.s526.data.source.local.S526Data
 import app.peter.s526.data.source.remote.Api
 
+import app.peter.s526.data.source.remote.OLResponseMapper
+
 import javax.inject.Inject
 
 class LibraryRepositoryImpl @Inject constructor (
@@ -12,9 +14,9 @@ class LibraryRepositoryImpl @Inject constructor (
     private val localSource: S526Data
 ): LibraryRepository {
 
-    override suspend fun getNewBook() = remoteSource.getNewBooks()
-    override suspend fun getDetailBook(isbn: String) = remoteSource.getBookDetail(isbn)
-    override suspend fun getSearchBook(query: String, page: String) = remoteSource.getSearchBook(query, page)
+    override suspend fun getNewBook(page: String) = OLResponseMapper.toListBook(remoteSource.getNewBooks(page = page.toIntOrNull() ?: 1), page)
+    override suspend fun getDetailBook(isbn: String) = OLResponseMapper.toDetailBook(remoteSource.getBookDetail(isbn), isbn)
+    override suspend fun getSearchBook(query: String, page: String) = OLResponseMapper.toListBook(remoteSource.getSearchBook(query, page.toIntOrNull() ?: 1), page)
 
     override fun addBookmark(book: Book) {
         if (localSource.bookmark.contains(book)) return

@@ -73,16 +73,16 @@ class BookmarkUseCaseTest {
              rating = "0",
              desc = "The Python Notes for Professionals book is compiled from Stack Overflow Documentation, the content is written by the beautiful people at Stack Overflow....",
              price = "\$0.00",
-             image = "https://itbook.store/img/books/1001621860589.png",
-             url = "https://itbook.store/books/1001621860589",
+             image = "https://covers.openlibrary.org/b/id/258027-L.jpg",
+             url = "https://openlibrary.org/works/OL12345W",
              pdf = NewPdf(freeBook = "https://www.dbooks.org/d/5591650063-1621860247-f0dcab9437a281b1/")
         )
         private val ITEM_BOOK = NewBook(isbn = "1001621860589",
             title = "Python Notes for Professionals",
             subtitle = "",
             price = "\$0.00",
-            image = "https://itbook.store/img/books/1001621860589.png",
-            url = "https://itbook.store/books/1001621860589")
+            image = "https://covers.openlibrary.org/b/id/258027-L.jpg",
+            url = "https://openlibrary.org/works/OL12345W")
         private val BOOK_LIST = listOf(ITEM_BOOK)
         private val EMPTY_BOOK_LIST = listOf<NewBook>()
         private val UPDATE_BOOK_LIST = listOf(ITEM_BOOK, ITEM_BOOK, ITEM_BOOK)

@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -19,11 +20,20 @@ class ApiModule {
     @Provides
     fun provideApi(
         okHttpClient: OkHttpClient,
-        converter: Converter.Factory): Api
-            = Retrofit.Builder()
-        .baseUrl(RemoteConst.URL)
-        .client(okHttpClient)
-        .addConverterFactory(converter)
-        .build()
-        .create(Api::class.java)
+        converter: Converter.Factory): Api {
+        val clientWithUserAgent = okHttpClient.newBuilder()
+            .addInterceptor(Interceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "S526App (peter.app)")
+                    .build()
+                chain.proceed(request)
+            })
+            .build()
+        return Retrofit.Builder()
+            .baseUrl(RemoteConst.URL)
+            .client(clientWithUserAgent)
+            .addConverterFactory(converter)
+            .build()
+            .create(Api::class.java)
+    }
 }
