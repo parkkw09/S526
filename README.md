@@ -5,6 +5,7 @@ S526은 사용자가 신간 도서를 확인하고, 원하는 책을 검색하�
 ## 📱 주요 기능
 
 *   **신간 도서 조회 (`New Books`)**: 최신 도서 목록을 빠르게 확인할 수 있습니다.
+    *   **무한 스크롤 (Pagination)**: 목록을 아래로 스크롤하면 부드럽게 다음 페이지의 신간 도서를 추가로 불러옵니다.
 *   **도서 검색 (`Search`)**:
     *   키워드를 통한 기본 도서 검색을 지원합니다.
     *   **멀티 키워드 검색**: 파이프(`|`) 기호를 사용하여 여러 키워드(예: `소설|과학`)를 동시에 검색하고, 중복을 제거한 통합 결과를 제공합니다.
@@ -16,14 +17,16 @@ S526은 사용자가 신간 도서를 확인하고, 원하는 책을 검색하�
 
 이 프로젝트는 **Clean Architecture**와 **MVVM** 패턴을 기반으로 구축되었으며, 최신 Android 기술 스택을 사용합니다.
 
-*   **Language**: Kotlin
+*   **Android SDK**: Compile / Target SDK 36
+*   **Language**: Kotlin 1.7
 *   **Architecture**: Clean Architecture (Presentation, Domain, Data Layers) + MVVM
 *   **Dependency Injection**: Hilt
 *   **Concurrency**: Kotlin Coroutines
 *   **Data Observability**: LiveData
 *   **UI Components**: XML Layouts, ViewBinding
-*   **Network**: (Inferred: Retrofit/OkHttp)
-*   **Local Database**: (Inferred: Room)
+*   **Network**: Retrofit, OkHttp
+*   **API Source**: OpenLibrary API
+*   **Local Data**: In-Memory Data Storage (`S526Data`)
 
 ## 📂 프로젝트 구조
 
@@ -33,16 +36,15 @@ S526은 사용자가 신간 도서를 확인하고, 원하는 책을 검색하�
 app/src/main/java/app/peter/s526
 ├── application  # 앱 전반의 설정 및 초기화 (App Class, Utils)
 ├── domain       # 비즈니스 로직 및 핵심 모델 (UseCase, Model, Repository Interface)
-├── data         # 데이터 처리 및 저장소 구현 (Repository Impl, DAO, API Source)
-└── presentation # UI 및 화면 로직 (Activity, Fragment, ViewModel)
+├── data         # 데이터 처리 및 저장소 구현 (Repository Impl, Remote/Local Source)
+└── presentation # UI 및 화면 로직 (Activity, Fragment, ViewModel, Adapter)
 ```
 
-### 핵심 로직 분석 (`MainViewModel`)
+### 핵심 로직 분석 (`MainViewModel` & `NewBookFragment`)
 
-`MainViewModel`은 앱의 주요 비즈니스 로직을 중재합니다.
-*   **`getNewBook`**: 비동기 처리를 통해 신간 데이터를 불러옵니다.
+*   **`getNewBook` & `getNextNewBook`**: OpenLibrary API를 통해 신간 데이터를 불러오며 페이지네이션(무한 스크롤)을 지원합니다.
 *   **`searchBook2`**: 사용자 정의 복합 검색 로직을 구현하여 여러 검색어에 대한 결과를 병합하고 ISBN 기준으로 중복을 필터링합니다.
-*   **`bookmark`**: `BookmarkUseCase`를 통해 로컬 DB와 연동하여 사용자의 즐겨찾기를 관리합니다.
+*   **`bookmark`**: 로컬 메모리(`S526Data`)와 연동하여 앱 세션 내에서 사용자의 즐겨찾기와 검색 기록을 관리합니다.
 
 ## 🚀 시작하기
 
