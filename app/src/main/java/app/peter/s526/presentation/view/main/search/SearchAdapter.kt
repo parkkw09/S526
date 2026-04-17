@@ -6,37 +6,27 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.R
 import app.peter.s526.databinding.ItemBookBinding
-import app.peter.s526.domain.model.NewBook
+import app.peter.s526.domain.model.Book
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
 class SearchAdapter(
     private val glideManager: RequestManager,
-    private val func : (NewBook) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val onClick: (Book) -> Unit,
+) : RecyclerView.Adapter<SearchAdapter.BookViewHolder>() {
 
-    private val bookList: MutableList<NewBook> = mutableListOf()
+    private val bookList: MutableList<Book> = mutableListOf()
 
-    fun addAllData(list: List<NewBook>) {
+    fun setData(list: List<Book>) {
         bookList.clear()
         bookList.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun addAllMore(list: List<NewBook>) {
+    fun appendData(list: List<Book>) {
         val size = bookList.size
         bookList.addAll(list)
         notifyItemRangeInserted(size, list.size)
-    }
-
-    fun updateData(index: Int, item: NewBook) {
-        bookList[index] = item
-        notifyItemChanged(index)
-    }
-
-    fun removeData(index: Int, item: NewBook) {
-        bookList.remove(item)
-        notifyItemRemoved(index)
     }
 
     fun clearData() {
@@ -44,51 +34,35 @@ class SearchAdapter(
         notifyDataSetChanged()
     }
 
-    fun size() = bookList.size
+    fun size(): Int = bookList.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        Log.d(TAG, "onCreateViewHolder() viewType[$viewType]")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         return BookViewHolder(
-            ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         )
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        Log.d(TAG, "onBindViewHolder() position[$position]")
+    override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book = bookList[position]
-        (holder as BookViewHolder).apply {
-            bind(position, book)
-            itemView.setOnClickListener { func.invoke(book) }
-        }
+        holder.bind(position, book)
+        holder.itemView.setOnClickListener { onClick(book) }
     }
 
     override fun getItemCount(): Int = bookList.size
 
     inner class BookViewHolder(
-        private val binding: ItemBookBinding
+        private val binding: ItemBookBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(index: Int, item: NewBook) {
-//            Log.d(TAG, "bind() item[$item]")
-            val count = "#$index"
-            with(binding) {
-                this.bookTitle.text = item.title
-                this.bookIsbn.text = item.isbn
-                this.bookPrice.text = item.price
-                this.bookUrl.text = item.url
-                this.bookImage.let {
-                    it.scaleType = ImageView.ScaleType.CENTER_CROP
-                    glideManager
-                        .load(item.image)
-                        .apply(RequestOptions().error(R.drawable.book))
-                        .into(it)
-                }
-                this.count.text = count
-            }
+        fun bind(index: Int, item: Book) = with(binding) {
+            bookTitle.text = item.title
+            bookSubtitle.text = item.subtitle
+            count.text = "#${index + 1}"
+            bookImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            glideManager
+                .load(item.image)
+                .apply(RequestOptions().error(R.drawable.book))
+                .into(bookImage)
         }
-    }
-
-    companion object {
-        private const val TAG = "BookmarkAdapter"
     }
 }

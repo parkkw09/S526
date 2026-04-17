@@ -1,39 +1,37 @@
 package app.peter.s526.domain.usecase.impl
 
-import app.peter.s526.data.repositories.LibraryRepository
-import app.peter.s526.domain.model.NewBook
-import app.peter.s526.domain.model.NewDetailBook
-import app.peter.s526.domain.translator.BookTranslator
+import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.model.BookDetail
+import app.peter.s526.domain.repository.LibraryRepository
 import app.peter.s526.domain.usecase.BookmarkUseCase
 import javax.inject.Inject
 
 class BookmarkUseCaseImpl @Inject constructor(
-    private val repository: LibraryRepository
-): BookmarkUseCase {
+    private val repository: LibraryRepository,
+) : BookmarkUseCase {
 
-    override fun addBookmark(detailBook: NewDetailBook) {
-        repository.addBookmark(BookTranslator.getBookByDetailBook(detailBook))
+    override fun addBookmark(detail: BookDetail) {
+        repository.addBookmark(detail.toBook())
     }
 
-    override fun deleteBookmark(detailBook: NewDetailBook) {
-        repository.deleteBookmark(BookTranslator.getBookByDetailBook(detailBook))
+    override fun deleteBookmark(detail: BookDetail) {
+        repository.deleteBookmark(detail.toBook())
     }
 
-    override fun checkBookmark(detailBook: NewDetailBook): Boolean {
-        return repository.checkBookmark(BookTranslator.getBookByDetailBook(detailBook))
+    override fun isBookmarked(detail: BookDetail): Boolean =
+        repository.isBookmarked(detail.toBook())
+
+    override fun updateBookmark(bookmark: List<Book>) {
+        repository.updateBookmark(bookmark)
     }
 
-    override fun updateBookmark(bookmark: List<NewBook>) {
-        repository.updateBookmark(BookTranslator.getBookList(bookmark))
-    }
+    override fun getBookmark(): List<Book> = repository.getBookmark()
 
-    override fun getBookmark(): List<NewBook> {
-        return repository.getBookmark().map {
-            BookTranslator.getNewBook(it)
-        }
-    }
-
-    companion object {
-        private const val TAG = "BookmarkUseCase"
-    }
+    private fun BookDetail.toBook(): Book = Book(
+        isbn = isbn13,
+        title = title,
+        subtitle = subtitle,
+        image = image,
+        url = url,
+    )
 }

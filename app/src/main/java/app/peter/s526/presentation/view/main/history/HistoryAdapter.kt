@@ -8,49 +8,32 @@ import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.databinding.ItemHistoryBinding
 
 class HistoryAdapter(
-    private val func : (String) -> Unit
-) : ListAdapter<String, RecyclerView.ViewHolder>(QueryDiffCallback()) {
+    private val onClick: (String) -> Unit,
+) : ListAdapter<String, HistoryAdapter.HistoryViewHolder>(QueryDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        Log.d(TAG, "onCreateViewHolder() viewType[$viewType]")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         return HistoryViewHolder(
-            ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         )
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        Log.d(TAG, "onBindViewHolder() position[$position]")
+    override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val query = getItem(position)
-        (holder as HistoryViewHolder).apply {
-            bind(query)
-            itemView.setOnClickListener { func.invoke(query) }
-        }
+        holder.bind(query)
+        holder.itemView.setOnClickListener { onClick(query) }
     }
 
     inner class HistoryViewHolder(
-        private val binding: ItemHistoryBinding
+        private val binding: ItemHistoryBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(query: String) {
-//            Log.d(TAG, "bind() item[$item]")
-            with(binding) {
-                this.searchHistory.text = query
-            }
+            binding.searchHistory.text = query
         }
-    }
-
-    companion object {
-        private const val TAG = "HistoryAdapter"
     }
 }
 
 private class QueryDiffCallback : DiffUtil.ItemCallback<String>() {
-
-    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-        return oldItem == newItem
-    }
+    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
 }

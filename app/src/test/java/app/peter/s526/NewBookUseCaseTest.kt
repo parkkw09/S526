@@ -2,11 +2,11 @@ package app.peter.s526
 
 import app.peter.s526.data.entities.OLSearchDoc
 import app.peter.s526.data.entities.OLSearchResponse
-import app.peter.s526.data.repositories.LibraryRepository
 import app.peter.s526.data.repositories.impl.LibraryRepositoryImpl
-import app.peter.s526.data.source.local.S526Data
+import app.peter.s526.data.source.local.LocalBookDataSource
 import app.peter.s526.data.source.remote.Api
-import app.peter.s526.domain.model.NewBook
+import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.repository.LibraryRepository
 import app.peter.s526.domain.usecase.impl.NewBookUseCaseImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 class NewBookUseCaseTest {
 
     private val mockServer = MockWebServer()
-    lateinit var repository: LibraryRepository
+    private lateinit var repository: LibraryRepository
 
     @Before
     fun setup() {
@@ -34,8 +34,7 @@ class NewBookUseCaseTest {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(Api::class.java)
-        val data = S526Data()
-        repository = LibraryRepositoryImpl(api, data)
+        repository = LibraryRepositoryImpl(api, LocalBookDataSource())
     }
 
     @After
@@ -44,15 +43,15 @@ class NewBookUseCaseTest {
     }
 
     @Test
-    fun `새로운 책 읽어오기 테스트 - 정상적으로 데이터를 읽어와야 한다`() {
+    fun `신간 도서 조회 - 정상적으로 데이터를 읽어와야 한다`() = runBlocking {
+        mockServer.enqueue(MockResponse().setBody(Gson().toJson(OL_RESPONSE)))
+
         val useCase = NewBookUseCaseImpl(repository)
-        runBlocking {
-            mockServer.enqueue(MockResponse().setBody(Gson().toJson(OL_RESPONSE)))
-            val list = useCase.getNewBook()
-            assertEquals(1, list.size)
-            assertEquals(EXPECTED_BOOK.title, list[0].title)
-            assertEquals(EXPECTED_BOOK.isbn, list[0].isbn)
-        }
+        val result = useCase.getNewBook()
+
+        assertEquals(1, result.books.size)
+        assertEquals(EXPECTED_BOOK.title, result.books[0].title)
+        assertEquals(EXPECTED_BOOK.isbn, result.books[0].isbn)
     }
 
     companion object {
@@ -66,20 +65,19 @@ class NewBookUseCaseTest {
             firstPublishYear = 2018,
             numberOfPagesMedian = 855,
             publisher = listOf("Self-publishing"),
-            language = listOf("eng")
+            language = listOf("eng"),
         )
         private val OL_RESPONSE = OLSearchResponse(
             numFound = 20,
             start = 0,
-            docs = listOf(OL_SEARCH_DOC)
+            docs = listOf(OL_SEARCH_DOC),
         )
-        private val EXPECTED_BOOK = NewBook(
+        private val EXPECTED_BOOK = Book(
             isbn = "1001621860589",
             title = "Python Notes for Professionals",
             subtitle = "",
-            price = "",
             image = "https://covers.openlibrary.org/b/id/258027-L.jpg",
-            url = "https://openlibrary.org/works/OL12345W"
+            url = "https://openlibrary.org/works/OL12345W",
         )
     }
 }

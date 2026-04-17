@@ -95,7 +95,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/book_subtitle"
-                tools:text="STEVE / JPUB" />
+                tools:text="Steve Klabnik / JPUB" />
 
             <TextView
                 android:id="@+id/book_language_isbn"
@@ -107,7 +107,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/book_author_publisher"
-                tools:text="ENG / 1234567890000 / 1234567890" />
+                tools:text="ENG / 9781234567890 / 1234567890" />
 
             <TextView
                 android:id="@+id/book_info"
@@ -119,7 +119,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/book_language_isbn"
-                tools:text="100 / 2018 / 5.0 / $30.0" />
+                tools:text="100 pages / 2018" />
 
             <TextView
                 android:id="@+id/book_description"
@@ -148,21 +148,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/book_description"
-                tools:text="Http://google.com" />
-
-            <TextView
-                android:id="@+id/book_pdf_link"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin_small"
-                android:layout_marginStart="@dimen/default_margin_small"
-                android:layout_marginEnd="@dimen/default_margin_small"
-                android:linksClickable="true"
-                android:autoLink="web"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/book_url"
-                tools:text="Http://google.com/pdf" />
+                tools:text="https://openlibrary.org/works/OL12345W" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

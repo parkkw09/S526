@@ -2,9 +2,7 @@ package app.peter.s526.presentation.view.main.search
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -13,53 +11,90 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.peter.s526.databinding.FragmentSearchBinding
-import app.peter.s526.presentation.view.main.MainViewModel
-import app.peter.s526.presentation.util.GlideApp
+import app.peter.s526.R
 import app.peter.s526.application.Log
+import app.peter.s526.databinding.FragmentSearchBinding
+import app.peter.s526.presentation.util.viewBinding
+import app.peter.s526.presentation.view.main.MainViewModel
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment: Fragment() {
+class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private val viewModel: MainViewModel by activityViewModels()
-    private val glide: RequestManager by lazy { GlideApp.with(this) }
+    private val binding by viewBinding(FragmentSearchBinding::bind)
+    private val glide: RequestManager by lazy { Glide.with(this) }
     private val args: SearchFragmentArgs by navArgs()
-
-    private lateinit var binding: FragmentSearchBinding
 
     private var pageCount = 1
     private var currentPage = 1
     private var loading = false
     private var complete = false
 
-    private fun subscribeUi(adapter: SearchAdapter) {
-        Log.d(TAG, "subscribeUi()")
-        viewModel.searchBookList.observe(viewLifecycleOwner) { bookList ->
-            Log.d(TAG, "subscribeUi() viewModel.searchBookList [$bookList] pageCount[$pageCount]")
-            when (currentPage == 1) {
-                true -> {
-                    adapter.addAllData(bookList)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated() query[${args.query}]")
+
+        resetPagingState()
+
+        val adapter = SearchAdapter(glide) { book ->
+            Log.d(TAG, "item click [${book.isbn}]")
+            navigateToDetail(view, book.isbn)
+        }
+
+        binding.searchList.apply {
+            layoutManager = LinearLayoutManager(context)
+            this.adapter = adapter
+            addOnScrollListener(createScrollListener())
+        }
+
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                hideSoftKeyboard()
+                query?.let { text ->
+                    resetPagingState()
+                    viewModel.setCurrentSearchQuery(text)
+                    viewModel.addHistory(text)
                 }
-                false -> adapter.addAllMore(bookList)
+                return true
             }
+
+            override fun onQueryTextChange(newText: String?): Boolean = true
+        })
+
+        subscribeUi(adapter)
+
+        if (args.query.isNotEmpty()) {
+            binding.search.setQuery(args.query, true)
+        }
+    }
+
+    override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView()")
+        resetPagingState()
+        super.onDestroyView()
+    }
+
+    private fun subscribeUi(adapter: SearchAdapter) {
+        viewModel.searchBookList.observe(viewLifecycleOwner) { bookList ->
+            Log.d(TAG, "searchBookList updated [size=${bookList.size}] currentPage[$currentPage]")
+            if (currentPage == 1) adapter.setData(bookList) else adapter.appendData(bookList)
         }
         viewModel.currentSearchQuery.observe(viewLifecycleOwner) { query ->
-            Log.d(TAG, "subscribeUi() viewModel.currentSearchQuery [$query]")
+            Log.d(TAG, "currentSearchQuery [$query]")
             if (query.isEmpty()) {
-                processClearResult()
+                clearSearchResult(adapter)
             } else {
-                processSearch(query)
+                performSearch(query, adapter)
             }
         }
     }
 
-    private fun processSearch(query: String) {
-        Log.d(TAG, "processSearch()")
-        val adapter = binding.searchList.adapter as SearchAdapter
+    private fun performSearch(query: String, adapter: SearchAdapter) {
         viewModel.searchBook(query, pageCount.toString()) { page, total ->
-            Log.d(TAG, "processSearch() current page[$page] totalCount[$total]")
+            Log.d(TAG, "performSearch() page[$page] total[$total]")
             currentPage = page
             if (adapter.size() >= total && pageCount != 1) {
                 loading = false
@@ -71,8 +106,7 @@ class SearchFragment: Fragment() {
         }
     }
 
-    private fun processClearResult() {
-        val adapter = binding.searchList.adapter as SearchAdapter
+    private fun clearSearchResult(adapter: SearchAdapter) {
         adapter.clearData()
         viewModel.clearSearchResult()
     }
@@ -83,92 +117,30 @@ class SearchFragment: Fragment() {
     }
 
     private fun hideSoftKeyboard() {
-        (context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).run {
-            hideSoftInputFromWindow(binding.search.windowToken, 0)
-        }
+        (context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+            ?.hideSoftInputFromWindow(binding.search.windowToken, 0)
     }
 
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
+    private fun resetPagingState() {
+        pageCount = 1
+        currentPage = 1
+        loading = false
+        complete = false
+    }
+
+    private fun createScrollListener() = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            (recyclerView.layoutManager as LinearLayoutManager?)?.let {
-                val position = it.findLastCompletelyVisibleItemPosition()
-                recyclerView.adapter?.let { adapter ->
-                    val remainCount = adapter.itemCount - position
-                    if (remainCount < AUTO_LOAD_THRESHOLD) {
-                        if (!loading && !complete) {
-                            loading = true
-                            viewModel.currentSearchQuery.value?.let { query ->
-                                processSearch(query)
-                            }
-                        }
-                    }
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+            val adapter = recyclerView.adapter ?: return
+            val position = layoutManager.findLastCompletelyVisibleItemPosition()
+            val remainCount = adapter.itemCount - position
+            if (remainCount < AUTO_LOAD_THRESHOLD && !loading && !complete) {
+                loading = true
+                viewModel.currentSearchQuery.value?.let { query ->
+                    performSearch(query, recyclerView.adapter as SearchAdapter)
                 }
             }
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        Log.d(TAG, "onCreateView()")
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
-        val adapter = SearchAdapter(glide) {
-            Log.d(TAG, "onCreateView() item click [${it.isbn}]")
-            navigateToDetail(binding.root, it.isbn)
-        }
-        binding.searchList.apply {
-            this.layoutManager = LinearLayoutManager(context)
-            this.adapter = adapter
-            this.addOnScrollListener(scrollListener)
-        }
-        binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                hideSoftKeyboard()
-                query?.let {
-                    currentPage = 1
-                    pageCount = 1
-                    loading = false
-                    complete = false
-
-                    viewModel.setCurrentSearchQuery(query)
-                    viewModel.addHistory(it)
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
-        })
-        subscribeUi(adapter)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val searchQuery = args.query
-        Log.d(TAG, "onViewCreated() searchQuery[$searchQuery]")
-        currentPage = 1
-        pageCount = 1
-        loading = false
-        complete = false
-
-        if (searchQuery.isNotEmpty()) {
-            binding.search.apply {
-                setQuery(searchQuery, true)
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "onDestroyView()")
-        currentPage = 1
-        pageCount = 1
-        loading = false
-        complete = false
     }
 
     companion object {

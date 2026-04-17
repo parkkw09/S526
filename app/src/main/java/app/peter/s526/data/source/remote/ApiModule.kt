@@ -4,36 +4,32 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApiModule {
+object ApiModule {
 
     @Provides
-    fun provideConverterFactoryJson(): Converter.Factory = GsonConverterFactory.create()
+    @Singleton
+    fun provideConverterFactory(): Converter.Factory = GsonConverterFactory.create()
 
     @Provides
-    fun provideApi(
+    @Singleton
+    fun provideRetrofit(
         okHttpClient: OkHttpClient,
-        converter: Converter.Factory): Api {
-        val clientWithUserAgent = okHttpClient.newBuilder()
-            .addInterceptor(Interceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .header("User-Agent", "S526App (peter.app)")
-                    .build()
-                chain.proceed(request)
-            })
-            .build()
-        return Retrofit.Builder()
-            .baseUrl(RemoteConst.URL)
-            .client(clientWithUserAgent)
-            .addConverterFactory(converter)
-            .build()
-            .create(Api::class.java)
-    }
+        converterFactory: Converter.Factory,
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(ApiConstants.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(converterFactory)
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
 }

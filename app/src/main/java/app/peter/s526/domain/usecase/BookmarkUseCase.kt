@@ -1,12 +1,12 @@
 package app.peter.s526.domain.usecase
 
-import app.peter.s526.domain.model.NewBook
-import app.peter.s526.domain.model.NewDetailBook
+import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.model.BookDetail
 
 interface BookmarkUseCase {
-    fun addBookmark(detailBook: NewDetailBook)
-    fun deleteBookmark(detailBook: NewDetailBook)
-    fun checkBookmark(detailBook: NewDetailBook): Boolean
-    fun updateBookmark(bookmark: List<NewBook>)
-    fun getBookmark(): List<NewBook>
+    fun addBookmark(detail: BookDetail)
+    fun deleteBookmark(detail: BookDetail)
+    fun isBookmarked(detail: BookDetail): Boolean
+    fun updateBookmark(bookmark: List<Book>)
+    fun getBookmark(): List<Book>
 }

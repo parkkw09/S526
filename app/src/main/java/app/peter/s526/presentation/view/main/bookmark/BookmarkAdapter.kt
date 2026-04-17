@@ -5,32 +5,23 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import app.peter.s526.R
-import app.peter.s526.databinding.ItemBookBinding
-import app.peter.s526.domain.model.NewBook
 import app.peter.s526.application.Log
+import app.peter.s526.databinding.ItemBookBinding
+import app.peter.s526.domain.model.Book
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 
 class BookmarkAdapter(
     private val glideManager: RequestManager,
-    private val onClick : (NewBook) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperListener {
+    private val onClick: (Book) -> Unit,
+) : RecyclerView.Adapter<BookmarkAdapter.BookViewHolder>(), ItemTouchHelperListener {
 
-    private val bookList: MutableList<NewBook> = mutableListOf()
+    private val bookList: MutableList<Book> = mutableListOf()
 
-    fun addAllData(list: List<NewBook>) {
+    fun setData(list: List<Book>) {
+        bookList.clear()
         bookList.addAll(list)
         notifyDataSetChanged()
-    }
-
-    fun updateData(index: Int, item: NewBook) {
-        bookList[index] = item
-        notifyItemChanged(index)
-    }
-
-    fun removeData(index: Int, item: NewBook) {
-        bookList.remove(item)
-        notifyItemRemoved(index)
     }
 
     fun clearData() {
@@ -48,30 +39,27 @@ class BookmarkAdapter(
         notifyDataSetChanged()
     }
 
-    fun getList() = bookList
+    fun getList(): List<Book> = bookList.toList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         return BookViewHolder(
-            ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         )
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book = bookList[position]
-        (holder as BookViewHolder).apply {
-            bind(position, book)
-            itemView.setOnClickListener { onClick.invoke(book) }
-        }
+        holder.bind(position, book)
+        holder.itemView.setOnClickListener { onClick(book) }
     }
 
     override fun getItemCount(): Int = bookList.size
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        Log.d(TAG, "onItemMove() fromPosition[$fromPosition], toPosition[$toPosition]")
-        val fromBook = bookList[fromPosition]
-        val toBook = bookList[toPosition]
-        bookList[fromPosition] = toBook
-        bookList[toPosition] = fromBook
+        Log.d(TAG, "onItemMove() from[$fromPosition], to[$toPosition]")
+        val tmp = bookList[fromPosition]
+        bookList[fromPosition] = bookList[toPosition]
+        bookList[toPosition] = tmp
         notifyItemMoved(fromPosition, toPosition)
         return true
     }
@@ -83,26 +71,18 @@ class BookmarkAdapter(
     }
 
     inner class BookViewHolder(
-        private val binding: ItemBookBinding
+        private val binding: ItemBookBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(index: Int, item: NewBook) {
-//            Log.d(TAG, "bind() item[$item]")
-            val count = "#$index"
-            with(binding) {
-                this.bookTitle.text = item.title
-                this.bookIsbn.text = item.isbn
-                this.bookPrice.text = item.price
-                this.bookUrl.text = item.url
-                this.bookImage.let {
-                    it.scaleType = ImageView.ScaleType.CENTER_CROP
-                    glideManager
-                        .load(item.image)
-                        .apply(RequestOptions().error(R.drawable.book))
-                        .into(it)
-                }
-                this.count.text = count
-            }
+        fun bind(index: Int, item: Book) = with(binding) {
+            bookTitle.text = item.title
+            bookSubtitle.text = item.subtitle
+            count.text = "#${index + 1}"
+            bookImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            glideManager
+                .load(item.image)
+                .apply(RequestOptions().error(R.drawable.book))
+                .into(bookImage)
         }
     }
 

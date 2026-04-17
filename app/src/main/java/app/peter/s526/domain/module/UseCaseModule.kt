@@ -1,6 +1,5 @@
 package app.peter.s526.domain.module
 
-import app.peter.s526.data.repositories.LibraryRepository
 import app.peter.s526.domain.usecase.BookmarkUseCase
 import app.peter.s526.domain.usecase.DetailBookUseCase
 import app.peter.s526.domain.usecase.NewBookUseCase
@@ -9,33 +8,29 @@ import app.peter.s526.domain.usecase.impl.BookmarkUseCaseImpl
 import app.peter.s526.domain.usecase.impl.DetailBookUseCaseImpl
 import app.peter.s526.domain.usecase.impl.NewBookUseCaseImpl
 import app.peter.s526.domain.usecase.impl.SearchBookUseCaseImpl
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
-class UseCaseModule {
+@InstallIn(ViewModelComponent::class)
+abstract class UseCaseModule {
 
-    @Singleton
-    @Provides
-    fun provideBookmarkUseCase(repository: LibraryRepository): BookmarkUseCase
-            = BookmarkUseCaseImpl(repository)
+    @Binds
+    @ViewModelScoped
+    abstract fun bindNewBookUseCase(impl: NewBookUseCaseImpl): NewBookUseCase
 
-    @Singleton
-    @Provides
-    fun provideDetailBookUseCase(repository: LibraryRepository): DetailBookUseCase
-            = DetailBookUseCaseImpl(repository)
+    @Binds
+    @ViewModelScoped
+    abstract fun bindBookmarkUseCase(impl: BookmarkUseCaseImpl): BookmarkUseCase
 
-    @Singleton
-    @Provides
-    fun provideNewBookUseCase(repository: LibraryRepository): NewBookUseCase
-            = NewBookUseCaseImpl(repository)
+    @Binds
+    @ViewModelScoped
+    abstract fun bindDetailBookUseCase(impl: DetailBookUseCaseImpl): DetailBookUseCase
 
-    @Singleton
-    @Provides
-    fun provideSearchBookUseCase(repository: LibraryRepository): SearchBookUseCase
-            = SearchBookUseCaseImpl(repository)
+    @Binds
+    @ViewModelScoped
+    abstract fun bindSearchBookUseCase(impl: SearchBookUseCaseImpl): SearchBookUseCase
 }

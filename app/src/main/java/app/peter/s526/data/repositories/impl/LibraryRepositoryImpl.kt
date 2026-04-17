@@ -1,45 +1,43 @@
 package app.peter.s526.data.repositories.impl
 
-import app.peter.s526.data.entities.Book
-import app.peter.s526.data.repositories.LibraryRepository
-import app.peter.s526.data.source.local.S526Data
+import app.peter.s526.data.mapper.BookMapper
+import app.peter.s526.data.source.local.LocalBookDataSource
 import app.peter.s526.data.source.remote.Api
-
-import app.peter.s526.data.source.remote.OLResponseMapper
-
+import app.peter.s526.domain.model.Book
+import app.peter.s526.domain.model.BookDetail
+import app.peter.s526.domain.model.BookList
+import app.peter.s526.domain.repository.LibraryRepository
 import javax.inject.Inject
 
-class LibraryRepositoryImpl @Inject constructor (
+class LibraryRepositoryImpl @Inject constructor(
     private val remoteSource: Api,
-    private val localSource: S526Data
-): LibraryRepository {
+    private val localSource: LocalBookDataSource,
+) : LibraryRepository {
 
-    override suspend fun getNewBook(page: String) = OLResponseMapper.toListBook(remoteSource.getNewBooks(page = page.toIntOrNull() ?: 1), page)
-    override suspend fun getDetailBook(isbn: String) = OLResponseMapper.toDetailBook(remoteSource.getBookDetail(isbn), isbn)
-    override suspend fun getSearchBook(query: String, page: String) = OLResponseMapper.toListBook(remoteSource.getSearchBook(query, page.toIntOrNull() ?: 1), page)
-
-    override fun addBookmark(book: Book) {
-        if (localSource.bookmark.contains(book)) return
-        localSource.bookmark.add(book)
+    override suspend fun getNewBooks(page: String): BookList {
+        val pageInt = page.toIntOrNull() ?: 1
+        return BookMapper.toBookList(remoteSource.getNewBooks(page = pageInt), page)
     }
 
-    override fun deleteBookmark(book: Book) {
-        localSource.bookmark.remove(book)
+    override suspend fun getBookDetail(isbn: String): BookDetail =
+        BookMapper.toBookDetail(remoteSource.getBookDetail(isbn), isbn)
+
+    override suspend fun searchBooks(query: String, page: String): BookList {
+        val pageInt = page.toIntOrNull() ?: 1
+        return BookMapper.toBookList(remoteSource.getSearchBook(query, pageInt), page)
     }
 
-    override fun checkBookmark(book: Book): Boolean = localSource.bookmark.contains(book)
+    override fun addBookmark(book: Book) = localSource.addBookmark(book)
 
-    override fun updateBookmark(bookmark: List<Book>) {
-        localSource.bookmark.clear()
-        localSource.bookmark.addAll(bookmark)
-    }
+    override fun deleteBookmark(book: Book) = localSource.removeBookmark(book)
 
-    override fun getBookmark() = localSource.bookmark
+    override fun isBookmarked(book: Book): Boolean = localSource.containsBookmark(book)
 
-    override fun addHistory(query: String) {
-        if (localSource.history.contains(query)) return
-        localSource.history.add(query)
-    }
+    override fun updateBookmark(bookmark: List<Book>) = localSource.replaceBookmark(bookmark)
 
-    override fun getHistory() = localSource.history
+    override fun getBookmark(): List<Book> = localSource.bookmark
+
+    override fun addHistory(query: String) = localSource.addHistory(query)
+
+    override fun getHistory(): List<String> = localSource.history
 }

@@ -4,7 +4,7 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class S526: Application() {
+class S526Application : Application() {
 
     override fun onCreate() {
         Log.d(TAG, "onCreate()")
