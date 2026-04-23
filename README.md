@@ -41,13 +41,13 @@ S526은 [OpenLibrary API](https://openlibrary.org/developers/api)를 기반으�
 | 언어 | Kotlin 1.7 |
 | 빌드 | Gradle 8.0, Android SDK 36 (minSdk 28) |
 | 아키텍처 | Clean Architecture + MVVM |
-| DI | Hilt 2.41 |
-| 비동기 | Kotlin Coroutines 1.6 |
-| 상태 관찰 | LiveData 2.4 |
-| UI | XML Layout, ViewBinding |
-| 내비게이션 | Jetpack Navigation Component 2.4 |
-| 네트워크 | Retrofit 2.9, OkHttp 4.9, Gson 2.8 |
-| 이미지 로딩 | Glide 4.12 |
+| DI | Hilt 2.51 |
+| 비동기 | Kotlin Coroutines 1.7 |
+| 상태 관찰 | StateFlow, LiveData |
+| UI | Jetpack Compose (Material 3) |
+| 내비게이션 | Jetpack Navigation Compose |
+| 네트워크 | Retrofit 2.9, OkHttp 4.12, Gson 2.10 |
+| 이미지 로딩 | Coil 2.7 |
 | 로컬 저장소 | In-Memory (`S526Data`) |
 | 리뷰 | Google Play In-App Review |
 | 테스트 | JUnit 4, Mockito, MockWebServer, Coroutines Test |

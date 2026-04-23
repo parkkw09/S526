@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.navigation.safeargs)
 }
 
 android {
@@ -48,8 +47,12 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 }
 
@@ -61,6 +64,19 @@ dependencies {
     implementation(libs.material)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.navigation)
+
+    // Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    debugImplementation(libs.compose.ui.tooling)
+
+    // Compose Reorderable
+    implementation(libs.reorderable)
 
     // Play
     implementation(libs.bundles.play.review)
@@ -78,8 +94,7 @@ dependencies {
     implementation(libs.gson)
 
     // Image
-    implementation(libs.glide.core)
-    ksp(libs.glide.ksp)
+    implementation(libs.coil.compose)
 
     // Testing - unit
     testImplementation(libs.junit)

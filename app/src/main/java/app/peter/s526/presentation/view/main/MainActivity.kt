@@ -1,18 +1,20 @@
 package app.peter.s526.presentation.view.main
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.compose.rememberNavController
 import app.peter.s526.R
 import app.peter.s526.application.Log
-import app.peter.s526.databinding.ActivityMainBinding
+import app.peter.s526.presentation.ui.navigation.S526NavHost
+import app.peter.s526.presentation.ui.theme.S526Theme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
-    private lateinit var binding: ActivityMainBinding
 
     private fun initializeApplication() {
         viewModel.initClient(applicationContext, resources.getString(R.string.app_name))
@@ -22,10 +24,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate()")
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         initializeApplication()
+
+        setContent {
+            S526Theme {
+                val navController = rememberNavController()
+                S526NavHost(navController = navController)
+            }
+        }
     }
 
     companion object {

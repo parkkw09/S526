@@ -1,8 +1,6 @@
 package app.peter.s526.presentation.view.main
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.peter.s526.application.Log
@@ -19,6 +17,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,24 +32,24 @@ class MainViewModel @Inject constructor(
     private val searchBookUseCase: SearchBookUseCase,
 ) : ViewModel() {
 
-    private val _bookList = MutableLiveData<List<Book>>()
-    val bookList: LiveData<List<Book>> get() = _bookList
+    private val _bookList = MutableStateFlow<List<Book>>(emptyList())
+    val bookList: StateFlow<List<Book>> = _bookList.asStateFlow()
 
     private var currentNewBookPage = 1
     private var isNewBookLoading = false
     private var hasMoreNewBooks = true
 
-    private val _bookmark = MutableLiveData<List<Book>>()
-    val bookmark: LiveData<List<Book>> get() = _bookmark
+    private val _bookmark = MutableStateFlow<List<Book>>(emptyList())
+    val bookmark: StateFlow<List<Book>> = _bookmark.asStateFlow()
 
-    private val _searchBookList = MutableLiveData<List<Book>>()
-    val searchBookList: LiveData<List<Book>> get() = _searchBookList
+    private val _searchBookList = MutableStateFlow<List<Book>>(emptyList())
+    val searchBookList: StateFlow<List<Book>> = _searchBookList.asStateFlow()
 
-    private val _history = MutableLiveData<List<String>>()
-    val history: LiveData<List<String>> get() = _history
+    private val _history = MutableStateFlow<List<String>>(emptyList())
+    val history: StateFlow<List<String>> = _history.asStateFlow()
 
-    private val _currentSearchQuery = MutableLiveData<String>()
-    val currentSearchQuery: LiveData<String> get() = _currentSearchQuery
+    private val _currentSearchQuery = MutableStateFlow("")
+    val currentSearchQuery: StateFlow<String> = _currentSearchQuery.asStateFlow()
 
     var appName: String? = null
         private set
@@ -81,7 +82,7 @@ class MainViewModel @Inject constructor(
                 val total = result.total.toIntOrNull() ?: 0
 
                 withContext(Dispatchers.Main) {
-                    val current = _bookList.value.orEmpty()
+                    val current = _bookList.value
                     _bookList.value = current + newBooks
                     currentNewBookPage++
                     hasMoreNewBooks = current.size + newBooks.size < total && newBooks.isNotEmpty()
@@ -134,9 +135,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    /**
-     * '|' 구분자로 분리된 여러 키워드를 병렬로 검색하고, ISBN 기준 중복을 제거한다.
-     */
     fun searchBookMulti(query: String, page: String = "1") {
         viewModelScope.launch(Dispatchers.IO) {
             try {
